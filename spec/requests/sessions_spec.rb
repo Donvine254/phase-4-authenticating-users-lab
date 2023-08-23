@@ -1,11 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe "Sessions", type: :request do
-  let!(:user) { User.create(username: 'author') }
+  let!(:user) { User.create(username: 'author', password: 'author2030') }
 
   describe "POST /login" do
     it 'returns the logged in user' do
-      post "/login", params: { username: user.username }
+      post "/login", params: { username: user.username, password: user.password}
 
       expect(response.body).to include_json({ 
         id: user.id, username: user.username
@@ -13,7 +13,7 @@ RSpec.describe "Sessions", type: :request do
     end
 
     it 'sets the user ID in the session' do
-      post "/login", params: { username: user.username }
+      post "/login", params: { username: user.username, password: user.password }
 
       expect(session[:user_id]).to eq(user.id)
     end
@@ -21,7 +21,7 @@ RSpec.describe "Sessions", type: :request do
   
   describe "DELETE /logout" do
     before do
-      post "/login", params: { username: user.username }
+      post "/login", params: { username: user.username, password: user.password }
     end
 
     it 'returns no content' do
